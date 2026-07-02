@@ -10,7 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     
-
     permissions:
       checks: write
       pull-requests: write
@@ -32,18 +31,18 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Test
-     
+      
         env:
-          DOTNET_TEST_NEW_EXPERIENCE: "true"
+          TESTINGPLATFORM_Extensions_TrxReport_Enabled: "True"
         run: |
-          dotnet test --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
+          ./test/Tests.Fx.Net/bin/Release/net10.0/Tests.Fx.Net
 
       - name: Publish Test Report
         uses: dorny/test-reporter@v3
         if: always()
         with:
           name: xUnit 3 Tests Report
-          path: '**/TestResults/test-results.trx'
+          path: '**/TestResults/*.trx'
           reporter: dotnet-trx
 
       - name: Upload Test Results
@@ -51,4 +50,4 @@ jobs:
         if: always()
         with:
           name: test-results
-          path: '**/TestResults/test-results.trx'
+          path: '**/TestResults/*.trx'
