@@ -31,13 +31,12 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Test
-    
         run: |
-          ./test/Tests.Fx.Net/bin/Release/net10.0/Tests.Fx.Net --output-trx
+          ./test/Tests.Fx.Net/bin/Release/net10.0/Tests.Fx.Net --trx-report
 
       - name: Publish Test Report
         uses: dorny/test-reporter@v3
-        if: always() 
+        if: always()
         with:
           name: xUnit 3 Tests Report
           path: '**/TestResults/*.trx'
