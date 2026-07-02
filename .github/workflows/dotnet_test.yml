@@ -31,8 +31,10 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Test
+        env:
+          TESTINGPLATFORM_RESULT_REPORT_TRX: "true"
         run: |
-          ./test/Tests.Fx.Net/bin/Release/net10.0/Tests.Fx.Net --trx-report
+          ./test/Tests.Fx.Net/bin/Release/net10.0/Tests.Fx.Net
 
       - name: Publish Test Report
         uses: dorny/test-reporter@v3
