@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/Fx.Net/Fx.Net.csproj" />
+  <Project Path="test/Tests.Fx.Net/Tests.Fx.Net.csproj" />
+</Solution>
