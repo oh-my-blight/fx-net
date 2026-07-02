@@ -26,7 +26,8 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Test
-    
+        env:
+          DOTNET_TEST_NEW_EXPERIENCE: "true"
         run: dotnet test --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
 
       - name: Upload Test Results
