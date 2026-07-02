@@ -1,0 +1,23 @@
+### YamlMime:ManagedReference
+items:
+- uid: Tests.Fx.Net
+  commentId: N:Tests.Fx.Net
+  id: Tests.Fx.Net
+  children:
+  - Tests.Fx.Net.UnitTest
+  langs:
+  - csharp
+  - vb
+  name: Tests.Fx.Net
+  nameWithType: Tests.Fx.Net
+  fullName: Tests.Fx.Net
+  type: Namespace
+  assemblies:
+  - Tests.Fx.Net
+references:
+- uid: Tests.Fx.Net.UnitTest
+  commentId: T:Tests.Fx.Net.UnitTest
+  href: Tests.Fx.Net.UnitTest.html
+  name: UnitTest
+  nameWithType: UnitTest
+  fullName: Tests.Fx.Net.UnitTest

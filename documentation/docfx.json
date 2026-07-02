@@ -1,0 +1,61 @@
+{
+  "$schema": "https://raw.githubusercontent.com/dotnet/docfx/main/schemas/docfx.schema.json",
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "../",
+          "files": [
+            "**/*.csproj"
+          ],
+          "exclude": [
+            "**/bin/**",
+            "**/obj/**",
+            "**/artifacts/**",
+            "**/tests/**",
+            "**/documentation/**"
+          ]
+        }
+      ],
+      "dest": "api"
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "api/**/*.yml",
+          "api/*.yml"
+        ]
+      },
+      {
+        "files": [
+          "articles/**/*.md",
+          "toc.yml",
+          "*.md"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "images/**"
+        ]
+      }
+    ],
+    "output": "_site",
+    "template": [
+      "default",
+      "modern",
+      "templates/material"
+    ],
+    "globalMetadata": {
+      "_appName": "Fx.Net",
+      "_appTitle": "Fx.Net",
+      "_enableSearch": true
+    },
+    "postProcessors": [
+      "ExtractSearchIndex"
+    ]
+  }
+}
