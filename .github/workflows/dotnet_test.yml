@@ -9,6 +9,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    permissions:
+      checks: write
+      pull-requests: write
+      contents: read
 
     steps:
       - name: Check out code
@@ -26,8 +31,17 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Test
+    
         run: |
-          ./test/Tests.Fx.Net/bin/Release/net10.0/Tests.Fx.Net
+          ./test/Tests.Fx.Net/bin/Release/net10.0/Tests.Fx.Net --report-trx
+
+      - name: Publish Test Report
+        uses: dorny/test-reporter@v3
+        if: always() 
+        with:
+          name: xUnit 3 Tests Report
+          path: '**/TestResults/*.trx'
+          reporter: dotnet-trx
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v7
