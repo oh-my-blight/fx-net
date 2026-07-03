@@ -1,5 +1,15 @@
 {
-  "Tests.Fx.Net": "Tests.Fx.Net.yml",
-  "Tests.Fx.Net.UnitTest": "Tests.Fx.Net.UnitTest.yml",
-  "Tests.Fx.Net.UnitTest.Test": "Tests.Fx.Net.UnitTest.yml"
+  "Fx.Net.Unit": "Fx.Net.Unit.yml",
+  "Fx.Net.Unit.Unit": "Fx.Net.Unit.Unit.yml",
+  "Fx.Net.Unit.Unit.CompareTo(Fx.Net.Unit.Unit)": "Fx.Net.Unit.Unit.yml",
+  "Fx.Net.Unit.Unit.CompareTo(System.Object)": "Fx.Net.Unit.Unit.yml",
+  "Fx.Net.Unit.Unit.Equals(Fx.Net.Unit.Unit)": "Fx.Net.Unit.Unit.yml",
+  "Fx.Net.Unit.Unit.Equals(System.Object)": "Fx.Net.Unit.Unit.yml",
+  "Fx.Net.Unit.Unit.GetHashCode": "Fx.Net.Unit.Unit.yml",
+  "Fx.Net.Unit.Unit.SuccessfulTask": "Fx.Net.Unit.Unit.yml",
+  "Fx.Net.Unit.Unit.SuccessfulValueTask": "Fx.Net.Unit.Unit.yml",
+  "Fx.Net.Unit.Unit.ToString": "Fx.Net.Unit.Unit.yml",
+  "Fx.Net.Unit.Unit.Value": "Fx.Net.Unit.Unit.yml",
+  "Fx.Net.Unit.Unit.op_Equality(Fx.Net.Unit.Unit,Fx.Net.Unit.Unit)": "Fx.Net.Unit.Unit.yml",
+  "Fx.Net.Unit.Unit.op_Inequality(Fx.Net.Unit.Unit,Fx.Net.Unit.Unit)": "Fx.Net.Unit.Unit.yml"
 }
