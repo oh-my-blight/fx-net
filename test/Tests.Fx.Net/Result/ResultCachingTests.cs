@@ -26,6 +26,35 @@ public class ResultCachingTests
     }
 
     [Fact]
+    public void SuccessTask_MultipleCalls_ReturnsSameCachedInstanceReference()
+    {
+        var firstCall = global::Fx.Net.Result.Result.SuccessTask;
+        var secondCall = global::Fx.Net.Result.Result.SuccessTask;
+
+        Assert.Same(firstCall, secondCall);
+    }
+
+    [Fact]
+    public void NullValueAsTask_MultipleCalls_ReturnsSameCachedInstanceReference()
+    {
+        var firstCall = global::Fx.Net.Result.Result.NullValueAsTask;
+        var secondCall = global::Fx.Net.Result.Result.NullValueAsTask;
+
+        Assert.Same(firstCall, secondCall);
+    }
+
+
+    [Fact]
+    public void ChainBrokenTask_MultipleCall_ReturnsSameCachedInstanceReference()
+    {
+        var firstCall = global::Fx.Net.Result.Result.ChainBrokenTask;
+        var secondCall = global::Fx.Net.Result.Result.ChainBrokenTask;
+
+        Assert.Same(firstCall, secondCall);
+    }
+
+
+    [Fact]
     public async Task NullValue_Returns_ValueTask_WithNull_ValueError()
     {
         var result = global::Fx.Net.Result.Result.NullValue;
