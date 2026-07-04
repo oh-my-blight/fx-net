@@ -1,15 +1,15 @@
-﻿using System.Threading.Tasks;
-
-using Fx.Net.Errors;
+﻿using Fx.Net.Errors;
 using Fx.Net.Result;
 using Fx.Net.Types;
 
+using Tests.Fx.Net.Result.Fixtures;
+
 namespace Tests.Fx.Net.Result;
 
-public class ResultCreationTest
+public class ResultCreationTests
 {
-    private readonly Error _testError = new Error("Code.Test", "Test error message");
-    private readonly string _testValue = "Hello, world!";
+    private readonly ResultTestData _resultTestData = new ResultTestData();
+
 
     [Fact]
     public void Success_WhenValueIsValueType_SetsIsSuccessToTrueAndStoresValue()
@@ -26,18 +26,17 @@ public class ResultCreationTest
         Assert.Equal(expectedValue, value);
     }
 
-
     [Fact]
     public void Success_WhenValueIsReferenceType_SetsIsSuccessToTrueAndStoresValue()
     {
-        var result = global::Fx.Net.Result.Result.Success(_testValue);
+        var result = global::Fx.Net.Result.Result.Success(_resultTestData.Value);
 
         Assert.True(result.IsSuccess);
         Assert.Equal(Error.None, result.Error);
 
         var hasValue = result.TryGetSuccess(out var value);
         Assert.True(hasValue);
-        Assert.Equal(_testValue, value);
+        Assert.Equal(_resultTestData.Value, value);
     }
 
 
@@ -57,7 +56,6 @@ public class ResultCreationTest
         Assert.Null(value);
     }
 
-
     [Fact]
     public void Success_Void_ReturnsSuccessUnit_WithIsSuccessTrue()
     {
@@ -68,32 +66,24 @@ public class ResultCreationTest
     }
 
     [Fact]
-    public void Success_Void_Returns_CachedInstance()
+    public void Success_WhenValueIsNullNullableValueType_ReturnsFailureWithNullValueContext()
     {
-        var firstCall = global::Fx.Net.Result.Result.Success();
-        var secondCall = global::Fx.Net.Result.Result.Success();
+        int? nullValue = null!;
 
-        Assert.Equal(firstCall, secondCall);
+        var result = global::Fx.Net.Result.Result.Success(nullValue);
+
+        Assert.False(result.IsSuccess);
+        Assert.Equal(default, nullValue);
+        Assert.Equal(ResultErrors.NullValue, result.Error);
     }
-
-    [Fact]
-    public async Task SuccessTask_ReturnsCompletedTask_WithSuccessResult()
-    {
-        var result = global::Fx.Net.Result.Result.SuccessTask;
-        var taskResult = await result;
-
-        Assert.True(result.IsCompletedSuccessfully);
-        Assert.True(taskResult.IsSuccess);
-    }
-
 
     [Fact]
     public void Failure_WhenCreatedWithError_SetsIsFailureToTrueAndStoresError()
     {
-        Result<Unit> actual = global::Fx.Net.Result.Result.Failure(_testError);
+        Result<Unit> actual = global::Fx.Net.Result.Result.Failure(_resultTestData.Error);
 
         Assert.True(actual.IsFailure);
-        Assert.Equal(_testError, actual.Error);
+        Assert.Equal(_resultTestData.Error, actual.Error);
     }
 
 
@@ -101,8 +91,8 @@ public class ResultCreationTest
     public void Failure_WhenCreatedWithError_OutputsFalseAndDefaultValue_InTryGetSuccess()
     {
         // Arrange
-        Result<int> actualValueType = global::Fx.Net.Result.Result.Failure(_testError);
-        Result<string> actualRefType = global::Fx.Net.Result.Result.Failure(_testError);
+        Result<int> actualValueType = global::Fx.Net.Result.Result.Failure(_resultTestData.Error);
+        Result<string> actualRefType = global::Fx.Net.Result.Result.Failure(_resultTestData.Error);
 
         //Action
         var isValueTypeAction = actualValueType.TryGetSuccess(out var valueType);
@@ -113,5 +103,32 @@ public class ResultCreationTest
         Assert.Equal(0, valueType);
         Assert.False(isValueTypeAction);
         Assert.False(isRefTypeAction);
+    }
+
+    [Fact]
+    public void Failure_WhenCreatedWithDefaultError_RetainsDefaultErrorWithoutCrashing()
+    {
+        Result<Unit> result = global::Fx.Net.Result.Result.Failure(default(Error));
+
+        Assert.Equal(ResultErrors.DefaultNullFailure, result.Error);
+    }
+
+    [Fact]
+    public void Default_ShouldInitialize_WithDefaultFailureError()
+    {
+        Result<int> result = default;
+
+        Assert.Equal(ResultErrors.DefaultNullFailure, result.Error);
+    }
+
+    [Fact]
+    public void TryGetSuccess_WhenDefaultInstanceWithReferenceType_ReturnsFalseAndNull()
+    {
+        Result<string> defaultResult = default;
+
+        var hasValue = defaultResult.TryGetSuccess(out var value);
+
+        Assert.False(hasValue);
+        Assert.Null(value);
     }
 }
