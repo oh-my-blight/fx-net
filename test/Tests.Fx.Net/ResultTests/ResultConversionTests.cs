@@ -1,10 +1,10 @@
 ﻿using Fx.Net.Errors;
-using Fx.Net.Result;
+using Fx.Net.Monads.Result;
 using Fx.Net.Types;
 
-using Tests.Fx.Net.Result.Fixtures;
+using Tests.Fx.Net.ResultTests.Fixtures;
 
-namespace Tests.Fx.Net.Result;
+namespace Tests.Fx.Net.ResultTests;
 
 public class ResultConversionTests
 {
@@ -13,7 +13,7 @@ public class ResultConversionTests
     [Fact]
     public void Deconstruct_WhenResultIsSuccess_OutputsTrueValidValueAndNoneError()
     {
-        var result = global::Fx.Net.Result.Result.Success(_resultTestData.Value);
+        var result = Result.Success(_resultTestData.Value);
 
         var (isSuccess, value, error) = result;
 
@@ -25,7 +25,7 @@ public class ResultConversionTests
     [Fact]
     public void Deconstruct_WhenResultIsFailure_OutputsFalseDefaultValueAndCorrectError()
     {
-        Result<string> result = global::Fx.Net.Result.Result.Failure(_resultTestData.Error);
+        Result<string> result = Result.Failure(_resultTestData.Error);
 
         var (isSuccess, value, error) = result;
 
@@ -57,7 +57,7 @@ public class ResultConversionTests
     [Fact]
     public void ImplicitOperator_ConvertsFailedResultToGenericResult()
     {
-        var failedResult = global::Fx.Net.Result.Result.Failure(_resultTestData.Error);
+        var failedResult = Result.Failure(_resultTestData.Error);
 
         Result<int> resultInt = failedResult;
         Result<string> resultString = failedResult;
@@ -81,5 +81,19 @@ public class ResultConversionTests
             () => Assert.True(result.IsFailure),
             () => Assert.Equal(ResultErrors.DefaultNullFailure, result.Error)
         );
+    }
+
+    [Fact]
+    public void ImplicitOperator_WhenReturningFailedResultFromMethod_CorrectlyConvertsToGenericResult()
+    {
+        Result<string> ExecuteConversion()
+        {
+            return Result.Failure(_resultTestData.Error);
+        }
+
+        var result = ExecuteConversion();
+
+        Assert.True(result.IsFailure);
+        Assert.Equal(_resultTestData.Error, result.Error);
     }
 }

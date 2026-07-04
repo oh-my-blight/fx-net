@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace Fx.Net.Result;
+using Fx.Net.Errors;
+using Fx.Net.Types;
 
-using Errors;
-
-using Types;
+namespace Fx.Net.Monads.Result;
 
 /// <summary>
 ///     Фиксированный контейнер, инкапсулирующий результат выполнения операции, содержащий либо успешно вычисленное значение, либо объект ошибки.

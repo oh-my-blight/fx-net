@@ -1,16 +1,17 @@
 ﻿using System.Threading.Tasks;
 
 using Fx.Net.Errors;
+using Fx.Net.Monads.Result;
 
-namespace Tests.Fx.Net.Result;
+namespace Tests.Fx.Net.ResultTests;
 
 public class ResultCachingTests
 {
     [Fact]
     public void Success_Void_Returns_CachedInstance()
     {
-        var firstCall = global::Fx.Net.Result.Result.Success();
-        var secondCall = global::Fx.Net.Result.Result.Success();
+        var firstCall = Result.Success();
+        var secondCall = Result.Success();
 
         Assert.Equal(firstCall, secondCall);
     }
@@ -18,7 +19,7 @@ public class ResultCachingTests
     [Fact]
     public async Task SuccessTask_ReturnsCompletedTask_WithSuccessResult()
     {
-        var result = global::Fx.Net.Result.Result.SuccessTask;
+        var result = Result.SuccessTask;
         var taskResult = await result;
 
         Assert.Equal(TaskStatus.RanToCompletion, result.Status);
@@ -28,8 +29,8 @@ public class ResultCachingTests
     [Fact]
     public void SuccessTask_MultipleCalls_ReturnsSameCachedInstanceReference()
     {
-        var firstCall = global::Fx.Net.Result.Result.SuccessTask;
-        var secondCall = global::Fx.Net.Result.Result.SuccessTask;
+        var firstCall = Result.SuccessTask;
+        var secondCall = Result.SuccessTask;
 
         Assert.Same(firstCall, secondCall);
     }
@@ -37,8 +38,8 @@ public class ResultCachingTests
     [Fact]
     public void NullValueAsTask_MultipleCalls_ReturnsSameCachedInstanceReference()
     {
-        var firstCall = global::Fx.Net.Result.Result.NullValueAsTask;
-        var secondCall = global::Fx.Net.Result.Result.NullValueAsTask;
+        var firstCall = Result.NullValueAsTask;
+        var secondCall = Result.NullValueAsTask;
 
         Assert.Same(firstCall, secondCall);
     }
@@ -47,8 +48,8 @@ public class ResultCachingTests
     [Fact]
     public void ChainBrokenTask_MultipleCall_ReturnsSameCachedInstanceReference()
     {
-        var firstCall = global::Fx.Net.Result.Result.ChainBrokenTask;
-        var secondCall = global::Fx.Net.Result.Result.ChainBrokenTask;
+        var firstCall = Result.ChainBrokenTask;
+        var secondCall = Result.ChainBrokenTask;
 
         Assert.Same(firstCall, secondCall);
     }
@@ -57,7 +58,7 @@ public class ResultCachingTests
     [Fact]
     public async Task NullValue_Returns_ValueTask_WithNull_ValueError()
     {
-        var result = global::Fx.Net.Result.Result.NullValue;
+        var result = Result.NullValue;
 
         var innerResult = await result;
 
@@ -68,7 +69,7 @@ public class ResultCachingTests
     [Fact]
     public async Task NullValueAsTask_Returns_Task_WithNullValueError()
     {
-        var result = global::Fx.Net.Result.Result.NullValueAsTask;
+        var result = Result.NullValueAsTask;
 
         var innerResult = await result;
 
@@ -80,7 +81,7 @@ public class ResultCachingTests
     [Fact]
     public async Task ChainBrokenTask_Returns_Task_WithResultError()
     {
-        var result = global::Fx.Net.Result.Result.ChainBrokenTask;
+        var result = Result.ChainBrokenTask;
 
         var innerResult = await result;
 
@@ -92,7 +93,7 @@ public class ResultCachingTests
     [Fact]
     public async Task ChainBrokenValueTask_Returns_ValueTask_WithNullResultError()
     {
-        var result = global::Fx.Net.Result.Result.ChainBrokenValueTask;
+        var result = Result.ChainBrokenValueTask;
         var innerResult = await result;
 
         Assert.True(innerResult.IsFailure);

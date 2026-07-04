@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Tests.Fx.Net.Result.Stubs;
+namespace Tests.Fx.Net.ResultTests.Stubs;
 
 internal class UserStab : IEquatable<UserStab>
 {

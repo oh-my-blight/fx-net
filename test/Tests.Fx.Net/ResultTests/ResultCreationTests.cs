@@ -1,10 +1,10 @@
 ﻿using Fx.Net.Errors;
-using Fx.Net.Result;
+using Fx.Net.Monads.Result;
 using Fx.Net.Types;
 
-using Tests.Fx.Net.Result.Fixtures;
+using Tests.Fx.Net.ResultTests.Fixtures;
 
-namespace Tests.Fx.Net.Result;
+namespace Tests.Fx.Net.ResultTests;
 
 public class ResultCreationTests
 {
@@ -16,7 +16,7 @@ public class ResultCreationTests
     {
         const int expectedValue = 1;
 
-        var result = global::Fx.Net.Result.Result.Success(expectedValue);
+        var result = Result.Success(expectedValue);
 
         Assert.True(result.IsSuccess);
         Assert.Equal(Error.None, result.Error);
@@ -29,7 +29,7 @@ public class ResultCreationTests
     [Fact]
     public void Success_WhenValueIsReferenceType_SetsIsSuccessToTrueAndStoresValue()
     {
-        var result = global::Fx.Net.Result.Result.Success(_resultTestData.Value);
+        var result = Result.Success(_resultTestData.Value);
 
         Assert.True(result.IsSuccess);
         Assert.Equal(Error.None, result.Error);
@@ -45,7 +45,7 @@ public class ResultCreationTests
     {
         string expectedValue = null!;
 
-        var result = global::Fx.Net.Result.Result.Success(expectedValue);
+        var result = Result.Success(expectedValue);
 
         Assert.True(result.IsFailure);
         Assert.Equal(ResultErrors.NullValue, result.Error);
@@ -59,7 +59,7 @@ public class ResultCreationTests
     [Fact]
     public void Success_Void_ReturnsSuccessUnit_WithIsSuccessTrue()
     {
-        var actual = global::Fx.Net.Result.Result.Success();
+        var actual = Result.Success();
 
         Assert.True(actual.IsSuccess);
         Assert.Equal(Error.None, actual.Error);
@@ -70,7 +70,7 @@ public class ResultCreationTests
     {
         int? nullValue = null!;
 
-        var result = global::Fx.Net.Result.Result.Success(nullValue);
+        var result = Result.Success(nullValue);
 
         Assert.False(result.IsSuccess);
         Assert.Equal(default, nullValue);
@@ -80,7 +80,7 @@ public class ResultCreationTests
     [Fact]
     public void Failure_WhenCreatedWithError_SetsIsFailureToTrueAndStoresError()
     {
-        Result<Unit> actual = global::Fx.Net.Result.Result.Failure(_resultTestData.Error);
+        Result<Unit> actual = Result.Failure(_resultTestData.Error);
 
         Assert.True(actual.IsFailure);
         Assert.Equal(_resultTestData.Error, actual.Error);
@@ -91,8 +91,8 @@ public class ResultCreationTests
     public void Failure_WhenCreatedWithError_OutputsFalseAndDefaultValue_InTryGetSuccess()
     {
         // Arrange
-        Result<int> actualValueType = global::Fx.Net.Result.Result.Failure(_resultTestData.Error);
-        Result<string> actualRefType = global::Fx.Net.Result.Result.Failure(_resultTestData.Error);
+        Result<int> actualValueType = Result.Failure(_resultTestData.Error);
+        Result<string> actualRefType = Result.Failure(_resultTestData.Error);
 
         //Action
         var isValueTypeAction = actualValueType.TryGetSuccess(out var valueType);
@@ -108,7 +108,7 @@ public class ResultCreationTests
     [Fact]
     public void Failure_WhenCreatedWithDefaultError_RetainsDefaultErrorWithoutCrashing()
     {
-        Result<Unit> result = global::Fx.Net.Result.Result.Failure(default(Error));
+        Result<Unit> result = Result.Failure(default(Error));
 
         Assert.Equal(ResultErrors.DefaultNullFailure, result.Error);
     }
