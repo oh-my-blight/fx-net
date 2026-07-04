@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace Fx.Net.Unit;
+namespace Fx.Net.Types;
 
 /// <summary>
 ///     Обеспечивает представление типа <see cref="System.Void"/> в сценариях, 
