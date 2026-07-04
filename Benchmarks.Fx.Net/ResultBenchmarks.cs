@@ -27,10 +27,4 @@ public class ResultBenchmarks
     {
         return new ValueTask<Result<Unit>>(Result.Success());
     }
-
-    [Benchmark]
-    public ValueTask<Result<Unit>> Return_Cached_ValueTask()
-    {
-        return Result.SuccessValueTask;
-    }
 }

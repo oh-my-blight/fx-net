@@ -151,15 +151,6 @@ public static class Result
     public static Task<Result<Unit>> SuccessTask { get; } = Task.FromResult(SuccessUnit);
 
     /// <summary>
-    ///     Предвычисленный экземпляр <see cref="ValueTask{T}"/>, содержащий успешный пустой результат <see cref="Result{Unit}"/>.
-    /// </summary>
-    /// <remarks>
-    ///     Применяется в высоконагруженных сценариях для обеспечения нулевых аллокаций при синхронном завершении методов.
-    /// </remarks>
-    public static ValueTask<Result<Unit>> SuccessValueTask => new(SuccessUnit);
-
-
-    /// <summary>
     ///     Возвращает кэшированный экземпляр успешного выполнения, не содержащий полезной нагрузки.
     /// </summary>
     /// <returns>   Экземпляр <see cref="Result{Unit}"/> в успешном состоянии.</returns>
@@ -190,13 +181,6 @@ public static class Result
         return new Result<T>(value);
     }
 
-
-    /// <summary>
-    ///     Предвычисленный экземпляр <see cref="ValueTask{T}"/>, содержащий сбой инициализации из-за значения <see langword="null"/>.
-    /// </summary>
-    public static ValueTask<Result<Unit>> NullValue =>
-        new(Failure(ResultErrors.NullValue));
-
     /// <summary>
     ///     Кэшированный объект <see cref="Task{T}"/>, содержащий сбой инициализации из-за значения <see langword="null"/>.
     /// </summary>
@@ -208,10 +192,4 @@ public static class Result
     /// </summary>
     public static Task<Result<Unit>> ChainBrokenTask { get; } =
         Task.FromResult<Result<Unit>>(Failure(ResultErrors.NullResult));
-
-    /// <summary>
-    ///     Предвычисленный экземпляр <see cref="ValueTask{T}"/>, сигнализирующий о прерывании цепочки вычислений.
-    /// </summary>
-    public static ValueTask<Result<Unit>> ChainBrokenValueTask =>
-        new(Failure(ResultErrors.NullResult));
 }

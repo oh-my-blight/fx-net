@@ -47,17 +47,6 @@ public class ResultCachingTests
 
 
     [Fact]
-    public async Task NullValue_Returns_ValueTask_WithNull_ValueError()
-    {
-        var result = Result.NullValue;
-
-        var innerResult = await result;
-
-        Assert.True(innerResult.IsFailure);
-        Assert.Equal(ResultErrors.NullValue, innerResult.Error);
-    }
-
-    [Fact]
     public async Task NullValueAsTask_Returns_Task_WithNullValueError()
     {
         var result = Result.NullValueAsTask;
@@ -77,16 +66,6 @@ public class ResultCachingTests
         var innerResult = await result;
 
         Assert.Equal(TaskStatus.RanToCompletion, result.Status);
-        Assert.True(innerResult.IsFailure);
-        Assert.Equal(ResultErrors.NullResult, innerResult.Error);
-    }
-
-    [Fact]
-    public async Task ChainBrokenValueTask_Returns_ValueTask_WithNullResultError()
-    {
-        var result = Result.ChainBrokenValueTask;
-        var innerResult = await result;
-
         Assert.True(innerResult.IsFailure);
         Assert.Equal(ResultErrors.NullResult, innerResult.Error);
     }
