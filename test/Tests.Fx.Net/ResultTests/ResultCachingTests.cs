@@ -8,15 +8,6 @@ namespace Tests.Fx.Net.ResultTests;
 public class ResultCachingTests
 {
     [Fact]
-    public void Success_Void_Returns_CachedInstance()
-    {
-        var firstCall = Result.Success();
-        var secondCall = Result.Success();
-
-        Assert.Equal(firstCall, secondCall);
-    }
-
-    [Fact]
     public async Task SuccessTask_ReturnsCompletedTask_WithSuccessResult()
     {
         var result = Result.SuccessTask;

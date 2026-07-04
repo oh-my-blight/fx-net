@@ -130,15 +130,16 @@ public class ResultEqualityTests
             () => Assert.True(defaultResult.IsFailure),
             () => Assert.True(failureResult.IsFailure),
             () => Assert.Equal(ResultErrors.DefaultNullFailure, defaultResult.Error),
-            () => Assert.Equal(ResultErrors.DefaultNullFailure, failureResult.Error)
+            () => Assert.Equal(ResultErrors.DefaultNullFailure, failureResult.Error),
+            () => Assert.Equal(defaultResult.GetHashCode(), failureResult.GetHashCode())
         );
     }
 
     [Fact]
     public void Equals_WhenValueTypeOverridesEquals_UsesCustomEqualityLogic()
     {
-        var firstUser = new UserStab(1, "Dave", 23);
-        var secondUser = new UserStab(1, "Gilbert", 45);
+        var firstUser = new UserStub(1, "Dave", 23);
+        var secondUser = new UserStub(1, "Gilbert", 45);
         var firstResult = Result.Success(firstUser);
         var secondResult = Result.Success(secondUser);
 
