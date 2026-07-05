@@ -31,10 +31,9 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Test
-    
         run: |
           mkdir -p test/Tests.Fx.Net/TestResults
-          ./test/Tests.Fx.Net/bin/Release/net10.0/Tests.Fx.Net -trx test/Tests.Fx.Net/TestResults/test-results.trx
+          ./test/Tests.Fx.Net/bin/Release/net10.0/Tests.Fx.Net --report trx:test/Tests.Fx.Net/TestResults/test-results.trx
 
       - name: Publish Test Report
         uses: dorny/test-reporter@v3
