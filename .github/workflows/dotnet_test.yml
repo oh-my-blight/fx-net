@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
@@ -40,7 +42,6 @@ jobs:
           name: xUnit 3 Tests Report
           path: '**/TestResults/*.trx'
           reporter: dotnet-trx
-          sha: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Upload Test Results
         uses: actions/upload-artifact@v7
