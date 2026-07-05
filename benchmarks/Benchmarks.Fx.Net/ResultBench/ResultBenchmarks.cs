@@ -1,13 +1,15 @@
 ﻿using System.Threading.Tasks;
 
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Diagnosers;
 
 using Fx.Net.Monads.Result;
 using Fx.Net.Types;
 
-namespace Benchmarks.Fx.Net;
+namespace Benchmarks.Fx.Net.ResultBench;
 
 [MemoryDiagnoser]
+[HardwareCounters(HardwareCounter.TotalCycles, HardwareCounter.LlcMisses)]
 public class ResultBenchmarks
 {
     [Benchmark(Baseline = true)]

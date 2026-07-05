@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="Benchmarks.Fx.Net/Benchmarks.Fx.Net.csproj" />
+  <Project Path="benchmarks/Benchmarks.Fx.Net/Benchmarks.Fx.Net.csproj" />
   <Project Path="src/Fx.Net/Fx.Net.csproj" />
   <Project Path="test/Tests.Fx.Net/Tests.Fx.Net.csproj" />
 </Solution>
