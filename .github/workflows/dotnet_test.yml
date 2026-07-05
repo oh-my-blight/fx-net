@@ -25,10 +25,10 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore test/Tests.Fx.Net/Tests.Fx.Net.csproj
 
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
+      - name: Build Test Project
+        run: dotnet build test/Tests.Fx.Net/Tests.Fx.Net.csproj --configuration Release --no-restore
 
       - name: Test
         run: |
