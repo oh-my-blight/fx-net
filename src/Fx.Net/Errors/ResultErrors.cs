@@ -1,9 +1,10 @@
-﻿using Fx.Net.Types;
+﻿using Fx.Net.Monads.Result;
+using Fx.Net.Types;
 
 namespace Fx.Net.Errors;
 
 /// <summary>
-///     Набор предопределенных объектов ошибок для работы c контейнером <see cref="Result"/>
+///     Набор предопределенных объектов ошибок для работы c контейнером <see cref="Result{T}"/>
 /// </summary>
 public static class ResultErrors
 {
