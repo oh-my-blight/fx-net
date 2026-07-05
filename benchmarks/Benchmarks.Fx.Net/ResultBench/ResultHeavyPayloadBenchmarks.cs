@@ -18,7 +18,18 @@ public class ResultHeavyPayloadBenchmarks
     [StructLayout(LayoutKind.Sequential)]
     public record struct UserProfileStruct
     {
-        public Guid id { get; }
+        public Guid Id;
+        public DateTime Date;
+        public string Email;
+        public string Name;
+
+        public UserProfileStruct(Guid id, DateTime date, string email, string name)
+        {
+            Id = id;
+            Date = date;
+            Email = email;
+            Name = name;
+        }
     };
 
     private readonly Guid _testId = Guid.NewGuid();
@@ -45,7 +56,7 @@ public class ResultHeavyPayloadBenchmarks
     [Benchmark]
     public ValueTask<Result<UserProfileStruct>> Return_Struct_In_ValueTask()
     {
-        var payload = new UserProfileStruct(_testId, _testEmail, _testName, _testDate);
+        var payload = new UserProfileStruct(_testId, _testDate, _testEmail, _testName);
         return new ValueTask<Result<UserProfileStruct>>(Result.Success(payload));
     }
 }
