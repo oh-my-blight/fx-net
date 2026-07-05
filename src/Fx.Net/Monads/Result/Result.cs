@@ -184,7 +184,7 @@ public static class Result
     /// <summary>
     ///     Кэшированный объект <see cref="Task{T}"/>, содержащий сбой инициализации из-за значения <see langword="null"/>.
     /// </summary>
-    public static Task<Result<Unit>> NullValueAsTask { get; } =
+    public static Task<Result<Unit>> NullValueTask { get; } =
         Task.FromResult<Result<Unit>>(Failure(ResultErrors.NullValue));
 
     /// <summary>
