@@ -1,5 +1,0 @@
-{
-  "Tests.Fx.Net": "Tests.Fx.Net.yml",
-  "Tests.Fx.Net.UnitTest": "Tests.Fx.Net.UnitTest.yml",
-  "Tests.Fx.Net.UnitTest.Test": "Tests.Fx.Net.UnitTest.yml"
-}
