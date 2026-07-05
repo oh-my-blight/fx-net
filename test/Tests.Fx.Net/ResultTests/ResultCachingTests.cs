@@ -27,10 +27,10 @@ public class ResultCachingTests
     }
 
     [Fact]
-    public void NullValueAsTask_MultipleCalls_ReturnsSameCachedInstanceReference()
+    public void NullValueTask_MultipleCalls_ReturnsSameCachedInstanceReference()
     {
-        var firstCall = Result.NullValueAsTask;
-        var secondCall = Result.NullValueAsTask;
+        var firstCall = Result.NullValueTask;
+        var secondCall = Result.NullValueTask;
 
         Assert.Same(firstCall, secondCall);
     }
@@ -47,9 +47,9 @@ public class ResultCachingTests
 
 
     [Fact]
-    public async Task NullValueAsTask_Returns_Task_WithNullValueError()
+    public async Task NullValueTask_Returns_Task_WithNullValueError()
     {
-        var result = Result.NullValueAsTask;
+        var result = Result.NullValueTask;
 
         var innerResult = await result;
 
