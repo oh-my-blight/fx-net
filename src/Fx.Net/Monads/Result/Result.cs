@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -50,11 +49,10 @@ public readonly struct Result<T> : IEquatable<Result<T>>
     /// </remarks>
     public Error Error => IsSuccess
         ? Error.None
-        
         : (_error.Code is not null ? _error : ResultErrors.DefaultNullFailure);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal Result(T value)
+    internal Result(in T value)
     {
         _value = value;
         IsSuccess = true;
@@ -181,7 +179,7 @@ public static class Result
     /// <param name="error">    Объект ошибки, описывающий причину сбоя.</param>
     /// <returns>   Экземпляр <see cref="FailedResult"/>, готовый к неявному приведению в универсальный контейнер.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static FailedResult Failure(Error error) => new(error);
+    public static FailedResult Failure(in Error error) => new(error);
 
 
     /// <summary>
@@ -194,11 +192,11 @@ public static class Result
     ///     в противном случае — неудачный контейнер с ошибкой <see cref="ResultErrors.NullValue"/>.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Result<T> Success<T>(T value)
+    public static Result<T> Success<T>(in T value)
     {
         if (value is null) return Failure(ResultErrors.NullValue);
-        
-        return new Result<T>(value);
+
+        return new Result<T>(in value);
     }
 
     /// <summary>
