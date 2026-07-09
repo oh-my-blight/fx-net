@@ -50,7 +50,11 @@ public readonly struct Error : IEquatable<Error>
     /// <see langword="null"/> не вызывает исключений при создании, но может привести к 
     /// <see cref="NullReferenceException"/> при последующем вызове методов сравнения или хэширования.
     /// </remarks>
-    public Error(string code, string message) => (Code, Message) = (code, message);
+    public Error(string code, string message)
+    {
+        Code = code ?? string.Empty;
+        Message = message ?? string.Empty;
+    }
 
     /// <summary>
     ///     Пустая ошибка (отсутствие ошибки) со значениями <see cref="string.Empty"/>.

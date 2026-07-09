@@ -27,8 +27,8 @@ namespace Fx.Net.Monads.Result;
 [StructLayout(LayoutKind.Sequential)]
 public readonly struct Result<T> : IEquatable<Result<T>>
 {
-    private readonly Error _error;
     private readonly T? _value;
+    private readonly Error _error;
 
     /// <summary>
     ///     Возвращает значение, указывающее, завершилась ли операция успешно.
@@ -47,16 +47,32 @@ public readonly struct Result<T> : IEquatable<Result<T>>
     ///     Если <see cref="IsSuccess"/> равен <see langword="true"/>, всегда возвращает <see cref="Error.None"/>. 
     ///     Если контейнер был инициализирован некорректно (через <c>default</c>), возвращает <see cref="ResultErrors.DefaultNullFailure"/>.
     /// </remarks>
-    public Error Error => IsSuccess ? Error.None : (_error != default ? _error : ResultErrors.DefaultNullFailure);
+    public Error Error => IsSuccess
+        ? Error.None
+        : (_error.Code is not null ? _error : ResultErrors.DefaultNullFailure);
 
-    internal Result(T value) => (_value, IsSuccess, _error) = (value, true, default);
-    internal Result(Error error) => (_error, IsSuccess, _value) = (error, false, default);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal Result(in T value)
+    {
+        _value = value;
+        IsSuccess = true;
+        _error = default;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal Result(Error error)
+    {
+        _value = default;
+        _error = error;
+        IsSuccess = false;
+    }
 
     /// <summary>
     ///     Выполняет безопасное извлечение значения из контейнера в случае успешного завершения операции.
     /// </summary>
     /// <param name="value">    При успешном завершении содержит извлеченное значение; в противном случае — значение по умолчанию для типа <typeparamref name="T"/>.</param>
     /// <returns>   <see langword="true"/>, если операция завершилась успешно (<see cref="IsSuccess"/> равен <see langword="true"/>); в противном случае — <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TryGetSuccess([NotNullWhen(true)] out T? value)
     {
         value = _value;
@@ -70,6 +86,7 @@ public readonly struct Result<T> : IEquatable<Result<T>>
     /// <param name="isSuccess">    Флаг успешного завершения операции.</param>
     /// <param name="value">    Инкапсулированное значение (доступно, если <paramref name="isSuccess"/> равен <see langword="true"/>).</param>
     /// <param name="error">    Объект ошибки (доступен, если <paramref name="isSuccess"/> равен <see langword="false"/>).</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Deconstruct(out bool isSuccess, [NotNullWhen(true)] out T? value, out Error error)
     {
         isSuccess = IsSuccess;
@@ -162,7 +179,7 @@ public static class Result
     /// <param name="error">    Объект ошибки, описывающий причину сбоя.</param>
     /// <returns>   Экземпляр <see cref="FailedResult"/>, готовый к неявному приведению в универсальный контейнер.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static FailedResult Failure(Error error) => new(error);
+    public static FailedResult Failure(in Error error) => new(error);
 
 
     /// <summary>
@@ -174,11 +191,12 @@ public static class Result
     ///     Успешный экземпляр <see cref="Result{T}"/>, если <paramref name="value"/> инициализирован; 
     ///     в противном случае — неудачный контейнер с ошибкой <see cref="ResultErrors.NullValue"/>.
     /// </returns>
-    public static Result<T> Success<T>(T value)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Result<T> Success<T>(in T value)
     {
         if (value is null) return Failure(ResultErrors.NullValue);
 
-        return new Result<T>(value);
+        return new Result<T>(in value);
     }
 
     /// <summary>
