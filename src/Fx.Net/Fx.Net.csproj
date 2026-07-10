@@ -7,8 +7,4 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Monads\" />
-  </ItemGroup>
 </Project>
