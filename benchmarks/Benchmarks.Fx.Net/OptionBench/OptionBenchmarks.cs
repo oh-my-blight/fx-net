@@ -27,4 +27,18 @@ public class OptionBenchmarks
     {
         return new ValueTask<Option<Unit>>(Option.SomeTask);
     }
+
+    [Benchmark]
+    public Task<Option<Unit>> Return_None_Caching_Task()
+    {
+        return Option.NoneTask<Unit>();
+    }
+
+    [Benchmark]
+    public Task<Option<Unit>> Return_New_None_Task()
+    {
+        Option<Unit> unit = Option.None;
+
+        return Task.FromResult(unit);
+    }
 }
