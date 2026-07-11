@@ -37,6 +37,35 @@ public class OptionCreationTests
     }
 
     [Fact]
+    public void Some_Parameterless_ReturnsValidUnit()
+    {
+        var option = Option.Some();
+
+        Assert.True(option.HasValue);
+        Assert.False(option.IsNone);
+    }
+
+
+    [Fact]
+    public void Some_WhenNullableValueTypeIsNull_ReturnsNone()
+    {
+        int? nullValue = null;
+        var option = Option.Some(nullValue);
+
+        Assert.True(option.IsNone);
+    }
+
+    [Fact]
+    public void Some_WhenNullableValueTypesHasValue_ReturnsSome()
+    {
+        int? validValue = 42;
+
+        var option = Option.Some(validValue);
+
+        Assert.True(option.HasValue);
+    }
+
+    [Fact]
     public void Default_WhenCreatedAsDefaultStruct_IsNoneIsTrue_And_HasValueIsFalse()
     {
         Option<int> option = default;

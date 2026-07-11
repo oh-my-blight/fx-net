@@ -97,4 +97,20 @@ public class OptionEqualityTests
         Assert.False(option.Equals(value));
         Assert.False(option.Equals(Option.Some(testValue)));
     }
+
+
+    [Fact]
+    public void GetHashCode_ForVariousNoneRepresentations_ReturnsSameHash()
+    {
+        Option<string> explicitNone = Option.None;
+        Option<string> defaultStruct = default;
+        Option<string> fromToken = (NoneToken)default;
+
+        var hash1 = explicitNone.GetHashCode();
+        var hash2 = defaultStruct.GetHashCode();
+        var hash3 = fromToken.GetHashCode();
+
+        Assert.Equal(hash1, hash2);
+        Assert.Equal(hash2, hash3);
+    }
 }
