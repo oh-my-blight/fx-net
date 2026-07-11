@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+
+using Fx.Net.Types;
 
 namespace Fx.Net.Monads.Option;
 
@@ -34,6 +38,9 @@ namespace Fx.Net.Monads.Option;
 [StructLayout(LayoutKind.Sequential)]
 public readonly struct Option<T> : IEquatable<Option<T>>
 {
+    private static readonly Option<T> _none = default;
+    internal static readonly Task<Option<T>> _noneTask = Task.FromResult(_none);
+
     private readonly T? _value;
     private readonly MonadState _monadState;
 
@@ -53,18 +60,19 @@ public readonly struct Option<T> : IEquatable<Option<T>>
     /// </value>
     public bool IsNone => _monadState == MonadState.None;
 
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal Option(in T value)
     {
         _value = value;
         _monadState = MonadState.Some;
     }
 
-    private Option(in MonadState monadState)
-    {
-        _value = default;
-        _monadState = monadState;
-    }
+    // [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    // private Option(in MonadState monadState)
+    // {
+    //     _value = default;
+    //     _monadState = monadState;
+    // }
 
 
     /// <summary>
@@ -72,12 +80,17 @@ public readonly struct Option<T> : IEquatable<Option<T>>
     /// </summary>
     /// <param name="_">Токен отсутствия значения.</param>
     /// <returns>Пустой экземпляр <see cref="Option{T}"/>.</returns>
-    public static implicit operator Option<T>(NoneToken _) => new(MonadState.None);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static implicit operator Option<T>(NoneToken _) => _none;
 
     /// <inheritdoc />
     public bool Equals(Option<T> other)
     {
-        return EqualityComparer<T?>.Default.Equals(_value, other._value) && _monadState == other._monadState;
+        if (_monadState != other._monadState) return false;
+
+        if (_monadState == MonadState.None) return true;
+
+        return EqualityComparer<T?>.Default.Equals(_value, other._value);
     }
 
     /// <inheritdoc />
@@ -99,7 +112,9 @@ public readonly struct Option<T> : IEquatable<Option<T>>
     /// <inheritdoc />
     public override int GetHashCode()
     {
-        return HashCode.Combine(_value, (int)_monadState);
+        return _monadState == MonadState.Some
+            ? EqualityComparer<T?>.Default.GetHashCode(_value!)
+            : (int)MonadState.None;
     }
 }
 
@@ -119,6 +134,29 @@ public readonly struct NoneToken
 public static class Option
 {
     /// <summary>
+    ///     Кэшированный экземпляр успешного выполнения, не содержащий полезной нагрузки.
+    /// </summary>
+    private static readonly Option<Unit> SomeUnit = new(Unit.Value);
+
+    /// <summary>
+    ///     Кэшированная задача, содержащая успешный пустой результат <see cref="Option{Unit}"/>.
+    /// </summary>
+    /// <value>
+    ///     Объект <see cref="Task{T}"/>.
+    /// </value>
+    /// <remarks>
+    ///     Исключает повторные аллокации объектов <see cref="Task{T}"/> в управляемой куче при частом 
+    ///     синхронном завершении асинхронных операций, не возвращающих значения.
+    /// </remarks>
+    public static Task<Option<Unit>> SomeTask { get; } = Task.FromResult(SomeUnit);
+
+    /// <summary>
+    ///     Возвращает кэшированный успешный экземпляр <see cref="Option{Unit}"/>.
+    /// </summary>
+    /// <returns>Экземпляр <see cref="Option{Unit}"/> в состоянии <see cref="MonadState.Some"/>.</returns>
+    public static Option<Unit> Some() => SomeUnit;
+
+    /// <summary>
     ///     Создает экземпляр <see cref="Option{T}"/>, содержащий указанное значение.
     /// </summary>
     /// <typeparam name="T">Тип возвращаемого значения.</typeparam>
@@ -127,6 +165,7 @@ public static class Option
     ///     Объект <see cref="Option{T}"/> со значением, если параметр <paramref name="value"/> не равен <see langword="null"/>; 
     ///     в противном случае — пустой <see cref="Option{T}"/>.
     /// </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Option<T> Some<T>(in T value)
     {
         if (value is not null) return new Option<T>(value);
@@ -141,4 +180,27 @@ public static class Option
     ///     Экземпляр <see cref="NoneToken"/>, готовый к неявному приведению.
     /// </value>
     public static NoneToken None => new();
+
+
+    /// <summary>
+    ///     Возвращает кэшированную задачу, содержащую пустой <see cref="Option{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">Тип инкапсулированного значения.</typeparam>
+    /// <returns>
+    ///     Повторно используемый экземпляр <see cref="Task{T}"/>, содержащий <see cref="Option{T}"/> 
+    ///     в состоянии <see cref="MonadState.None"/>.
+    /// </returns>
+    /// <remarks>
+    ///     <para>
+    ///         Данный метод спроектирован для обеспечения нулевых алокация в высоконагруженных асинхронных конвейерах. 
+    ///         Когда асинхронная операция завершается синхронно по причине отсутствия данных (например, промах мимо кэша, 
+    ///         пустой ответ из репозитория или провал валидации), возврат этого кэша полностью исключает 
+    ///         выделение памяти под объект <see cref="Task"/> в управляемой куче
+    ///     </para>
+    ///     <para>
+    ///         Экземпляр задачи инициализируется лениво — ровно один раз в рамках статического конструктора 
+    ///         обобщенной структуры <see cref="Option{T}"/> для каждого уникального закрытого типа <typeparamref name="T"/>.
+    ///     </para>
+    /// </remarks>
+    public static Task<Option<T>> NoneTask<T>() => Option<T>._noneTask;
 }
