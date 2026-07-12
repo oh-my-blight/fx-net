@@ -34,15 +34,6 @@ public readonly struct Unit : IEquatable<Unit>, IComparable<Unit>, IComparable
     /// </remarks>
     public static Task<Unit> SuccessfulTask { get; } = Task.FromResult(_value);
 
-    /// <summary>
-    ///     Вычисляемый экземпляр <see cref="ValueTask{T}"/> для оптимизации асинхронных путей выполнения.
-    /// </summary>
-    /// <remarks>
-    ///     Применяется в высоконагруженных сценариях, где метод завершается синхронно в большинстве случаев, 
-    ///     гарантируя нулевое выделение памяти.
-    /// </remarks>
-    public static ValueTask<Unit> SuccessfulValueTask => new(_value);
-
 
     /// <summary>
     ///     Указывает, равен ли текущий экземпляр другому экземпляру того же типа.

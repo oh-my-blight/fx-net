@@ -168,7 +168,7 @@ public static class Option
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Option<T> Some<T>(in T value)
     {
-        if (value is not null) return new Option<T>(value);
+        if (value is not null) return new Option<T>(in value);
 
         return None;
     }
