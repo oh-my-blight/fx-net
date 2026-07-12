@@ -134,27 +134,23 @@ public readonly struct NoneToken
 public static class Option
 {
     /// <summary>
-    ///     Кэшированный экземпляр успешного выполнения, не содержащий полезной нагрузки.
-    /// </summary>
-    private static readonly Option<Unit> SomeUnit = new(Unit.Value);
-
-    /// <summary>
-    ///     Кэшированная задача, содержащая успешный пустой результат <see cref="Option{Unit}"/>.
+    ///     Возвращает маркер отсутствия значения.
     /// </summary>
     /// <value>
-    ///     Объект <see cref="Task{T}"/>.
+    ///     Экземпляр <see cref="NoneToken"/>, готовый к неявному приведению.
     /// </value>
-    /// <remarks>
-    ///     Исключает повторные аллокации объектов <see cref="Task{T}"/> в управляемой куче при частом 
-    ///     синхронном завершении асинхронных операций, не возвращающих значения.
-    /// </remarks>
-    public static Task<Option<Unit>> SomeTask { get; } = Task.FromResult(SomeUnit);
+    public static NoneToken None
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => new();
+    }
 
     /// <summary>
     ///     Возвращает кэшированный успешный экземпляр <see cref="Option{Unit}"/>.
     /// </summary>
     /// <returns>Экземпляр <see cref="Option{Unit}"/> в состоянии <see cref="MonadState.Some"/>.</returns>
-    public static Option<Unit> Some() => SomeUnit;
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Option<Unit> Some() => Cache<Unit>.Some;
 
     /// <summary>
     ///     Создает экземпляр <see cref="Option{T}"/>, содержащий указанное значение.
@@ -170,37 +166,59 @@ public static class Option
     {
         if (value is not null) return new Option<T>(in value);
 
-        return None;
+        return Cache<T>.None;
     }
 
-    /// <summary>
-    ///     Возвращает маркер отсутствия значения.
-    /// </summary>
-    /// <value>
-    ///     Экземпляр <see cref="NoneToken"/>, готовый к неявному приведению.
-    /// </value>
-    public static NoneToken None => new();
+    /// <inheritdoc cref="Cache{T}.NoneTask" />
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Task<Option<T>> NoneTask<T>() => Cache<T>.NoneTask;
 
-    /// <summary>
-    ///     Возвращает кэшированную задачу, содержащую пустой <see cref="Option{T}"/>.
-    /// </summary>
-    /// <typeparam name="T">Тип инкапсулированного значения.</typeparam>
-    /// <returns>
-    ///     Повторно используемый экземпляр <see cref="Task{T}"/>, содержащий <see cref="Option{T}"/> 
-    ///     в состоянии <see cref="MonadState.None"/>.
-    /// </returns>
-    /// <remarks>
-    ///     <para>
-    ///         Данный метод спроектирован для обеспечения нулевых алокация в высоконагруженных асинхронных конвейерах. 
-    ///         Когда асинхронная операция завершается синхронно по причине отсутствия данных (например, промах мимо кэша, 
-    ///         пустой ответ из репозитория или провал валидации), возврат этого кэша полностью исключает 
-    ///         выделение памяти под объект <see cref="Task"/> в управляемой куче
-    ///     </para>
-    ///     <para>
-    ///         Экземпляр задачи инициализируется лениво — ровно один раз в рамках статического конструктора 
-    ///         обобщенной структуры <see cref="Option{T}"/> для каждого уникального закрытого типа <typeparamref name="T"/>.
-    ///     </para>
-    /// </remarks>
-    public static Task<Option<T>> NoneTask<T>() => Option<T>._noneTask;
+    /// <inheritdoc cref="Cache{T}.SomeTask" />
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Task<Option<Unit>> SomeTask() => Cache<Unit>.SomeTask;
+
+    public static class Cache<T>
+    {
+
+        public static readonly Option<T> None = default;
+
+        public static readonly Option<T> Some = typeof(T) == typeof(Unit)
+            ? (Option<T>)(object)new Option<Unit>(Unit.Value)
+            : default;
+
+        /// <summary>
+        ///     Возвращает кэшированную задачу, содержащую пустой <see cref="Option{T}"/>.
+        /// </summary>
+        /// <typeparam name="T">Тип инкапсулированного значения.</typeparam>
+        /// <returns>
+        ///     Повторно используемый экземпляр <see cref="Task{T}"/>, содержащий <see cref="Option{T}"/> 
+        ///     в состоянии <see cref="MonadState.None"/>.
+        /// </returns>
+        /// <remarks>
+        ///     <para>
+        ///         Данный метод спроектирован для обеспечения нулевых алокация в высоконагруженных асинхронных конвейерах. 
+        ///         Когда асинхронная операция завершается синхронно по причине отсутствия данных (например, промах мимо кэша, 
+        ///         пустой ответ из репозитория или провал валидации), возврат этого кэша полностью исключает 
+        ///         выделение памяти под объект <see cref="Task"/> в управляемой куче
+        ///     </para>
+        ///     <para>
+        ///         Экземпляр задачи инициализируется лениво — ровно один раз в рамках статического конструктора 
+        ///         обобщенной структуры <see cref="Option{T}"/> для каждого уникального закрытого типа <typeparamref name="T"/>.
+        ///     </para>
+        /// </remarks>
+        public static readonly Task<Option<T>> NoneTask = Task.FromResult(None);
+
+        /// <summary>
+        ///     Кэшированная задача, содержащая успешный пустой результат <see cref="Option{Unit}"/>.
+        /// </summary>
+        /// <value>
+        ///     Объект <see cref="Task{T}"/>.
+        /// </value>
+        /// <remarks>
+        ///     Исключает повторные аллокации объектов <see cref="Task{T}"/> в управляемой куче при частом 
+        ///     синхронном завершении асинхронных операций, не возвращающих значения.
+        /// </remarks>
+        public static readonly Task<Option<T>> SomeTask = Task.FromResult(Some);
+    }
 }

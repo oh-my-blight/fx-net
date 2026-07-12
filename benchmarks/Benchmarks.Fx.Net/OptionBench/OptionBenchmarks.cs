@@ -19,13 +19,13 @@ public class OptionBenchmarks
     [Benchmark]
     public Task<Option<Unit>> Returned_Cached_Task()
     {
-        return Option.SomeTask;
+        return Option.SomeTask();
     }
 
     [Benchmark]
     public ValueTask<Option<Unit>> Return_New_ValueTask()
     {
-        return new ValueTask<Option<Unit>>(Option.SomeTask);
+        return new ValueTask<Option<Unit>>(Option.SomeTask());
     }
 
     [Benchmark]

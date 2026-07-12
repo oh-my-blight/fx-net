@@ -22,8 +22,8 @@ public class OptionCachingTests
     [Fact]
     public async Task SomeTask_CalledMultipleTimes_ReturnsExactlySameTaskInstance()
     {
-        var firstTask = Option.SomeTask;
-        var secondTask = Option.SomeTask;
+        var firstTask = Option.SomeTask();
+        var secondTask = Option.SomeTask();
 
         var firstResult = await firstTask;
         var secondResult = await secondTask;
