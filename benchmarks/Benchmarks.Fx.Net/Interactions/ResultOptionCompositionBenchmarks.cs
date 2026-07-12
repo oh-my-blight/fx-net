@@ -36,7 +36,7 @@ public class ResultOptionCompositionBenchmarks
     [Benchmark(Description = "Nested Task: Success + SomeTask(Unit)")]
     public Result<Task<Option<Unit>>> Return_Success_Task_With_SomeTask()
     {
-        return Result.Success(Option.SomeTask);
+        return Result.Success(Option.SomeTask());
     }
 
     [Benchmark(Description = "Nested Task: Success + None")]
