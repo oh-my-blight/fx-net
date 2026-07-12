@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Diagnosers;
+
+using Benchmarks.Fx.Net.BenchFixtures;
 
 using Fx.Net.Monads.Option;
 
@@ -14,35 +15,6 @@ namespace Benchmarks.Fx.Net.OptionBench;
 [DisassemblyDiagnoser(exportHtml: true, maxDepth: 3)]
 public class OptionHeavyPayloadBenchmarks
 {
-    public record class HeavyClassPayload(
-        Guid Id,
-        string Email,
-        string Name,
-        string Role,
-        DateTime CreatedAt,
-        long Flags);
-
-    [StructLayout(LayoutKind.Sequential)]
-    public record struct HeavyStructPayload
-    {
-        public Guid Id;
-        public DateTime CreatedAt;
-        public long Flags;
-        public string Email;
-        public string Name;
-        public string Role;
-
-        public HeavyStructPayload(Guid id, DateTime createdAt, long flags, string email, string name, string role)
-        {
-            Id = id;
-            CreatedAt = createdAt;
-            Flags = flags;
-            Email = email;
-            Name = name;
-            Role = role;
-        }
-    }
-
     private readonly Guid _testId = Guid.NewGuid();
     private readonly DateTime _testDate = DateTime.UtcNow;
     private readonly long _testFlags = 0xCAFEEBABE;

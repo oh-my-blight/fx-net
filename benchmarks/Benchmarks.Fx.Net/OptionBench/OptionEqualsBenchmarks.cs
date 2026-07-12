@@ -1,4 +1,6 @@
-﻿using Fx.Net.Monads.Option;
+﻿using Benchmarks.Fx.Net.BenchFixtures;
+
+using Fx.Net.Monads.Option;
 
 namespace Benchmarks.Fx.Net.OptionBench;
 
@@ -13,30 +15,6 @@ using BenchmarkDotNet.Diagnosers;
 [DisassemblyDiagnoser(exportHtml: true, maxDepth: 3)]
 public class OptionEqualsBenchmarks
 {
-    public record class HeavyClass(Guid Id, string Email, string Name, DateTime Date);
-
-    [StructLayout(LayoutKind.Sequential)]
-    public record struct HeavyStructWithRefs(Guid Id, DateTime Date, string Email, string Name);
-
-    [StructLayout(LayoutKind.Sequential)]
-    public record struct PureHeavyStruct
-    {
-        public Guid Id1;
-        public Guid Id2;
-        public DateTime Date1;
-        public DateTime Date2;
-        public long Counter;
-
-        public PureHeavyStruct(Guid id1, Guid id2, DateTime date1, DateTime date2, long counter)
-        {
-            Id1 = id1;
-            Id2 = id2;
-            Date1 = date1;
-            Date2 = date2;
-            Counter = counter;
-        }
-    }
-
     private static readonly Guid TargetGuid1 = Guid.NewGuid();
     private static readonly Guid TargetGuid2 = Guid.NewGuid();
     private static readonly DateTime TargetDate1 = DateTime.UtcNow;
