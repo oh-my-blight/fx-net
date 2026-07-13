@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Diagnosers;
 
 using Fx.Net.Monads.Option;
 using Fx.Net.Monads.Result;
@@ -9,6 +10,8 @@ using Fx.Net.Types;
 namespace Benchmarks.Fx.Net.Interactions;
 
 [MemoryDiagnoser]
+[HardwareCounters(HardwareCounter.TotalCycles, HardwareCounter.LlcMisses)]
+[DisassemblyDiagnoser(exportHtml: true, maxDepth: 3)]
 public class ResultOptionCompositionBenchmarks
 {
     private static readonly Error CriticalError = new("SYS001", "Database timeout");
