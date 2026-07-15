@@ -38,7 +38,7 @@ namespace Fx.Net.Monads.Option;
 [StructLayout(LayoutKind.Sequential)]
 public readonly struct Option<T> : IEquatable<Option<T>>
 {
-    private static readonly Option<T> _none = default;
+    private static readonly Option<T> _none;
     internal static readonly Task<Option<T>> _noneTask = Task.FromResult(_none);
 
     private readonly T? _value;
@@ -150,7 +150,7 @@ public static class Option
     /// </summary>
     /// <returns>Экземпляр <see cref="Option{Unit}"/> в состоянии <see cref="MonadState.Some"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Option<Unit> Some() => Cache<Unit>.Some;
+    public static Option<Unit> Some() => Cache<Unit>.SomeInstance;
 
     /// <summary>
     ///     Создает экземпляр <see cref="Option{T}"/>, содержащий указанное значение.
@@ -166,24 +166,41 @@ public static class Option
     {
         if (value is not null) return new Option<T>(in value);
 
-        return Cache<T>.None;
+        return Cache<T>.NoneInstance;
     }
 
-    /// <inheritdoc cref="Cache{T}.NoneTask" />
-
+    /// <summary>
+    ///     Возвращает кэшированную задачу, содержащую пустой <see cref="Option{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">Тип инкапсулированного значения.</typeparam>
+    /// <returns>Задача, содержащая пустой <see cref="Option{T}"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Task<Option<T>> NoneTask<T>() => Cache<T>.NoneTask;
+    public static Task<Option<T>> NoneTask<T>() => Cache<T>.NoneTaskInstance;
 
-    /// <inheritdoc cref="Cache{T}.SomeTask" />
+    /// <summary>
+    ///     Возвращает кэшированную задачу, содержащую успешный <see cref="Option{Unit}"/>.
+    /// </summary>
+    /// <returns>Задача, содержащая <see cref="Option{Unit}"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Task<Option<Unit>> SomeTask() => Cache<Unit>.SomeTask;
+    public static Task<Option<Unit>> SomeTask() => Cache<Unit>.SomeTaskInstance;
 
+
+    /// <summary>
+    ///     Предоставляет внутренний кэш для повторно используемых экземпляров <see cref="Option{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">Тип инкапсулированного значения.</typeparam>
     public static class Cache<T>
     {
+        /// <summary>
+        ///     Кэшированный пустой экземпляр <see cref="Option{T}"/>.
+        /// </summary>
+        public static readonly Option<T> NoneInstance = default;
 
-        public static readonly Option<T> None = default;
-
-        public static readonly Option<T> Some = typeof(T) == typeof(Unit)
+        /// <summary>
+        ///     Кэшированный успешный экземпляр для типа <see cref="Unit"/>. 
+        ///     Для остальных типов возвращает значение по умолчанию.
+        /// </summary>
+        public static readonly Option<T> SomeInstance = typeof(T) == typeof(Unit)
             ? (Option<T>)(object)new Option<Unit>(Unit.Value)
             : default;
 
@@ -207,7 +224,7 @@ public static class Option
         ///         обобщенной структуры <see cref="Option{T}"/> для каждого уникального закрытого типа <typeparamref name="T"/>.
         ///     </para>
         /// </remarks>
-        public static readonly Task<Option<T>> NoneTask = Task.FromResult(None);
+        public static readonly Task<Option<T>> NoneTaskInstance = Task.FromResult(NoneInstance);
 
         /// <summary>
         ///     Кэшированная задача, содержащая успешный пустой результат <see cref="Option{Unit}"/>.
@@ -219,6 +236,6 @@ public static class Option
         ///     Исключает повторные аллокации объектов <see cref="Task{T}"/> в управляемой куче при частом 
         ///     синхронном завершении асинхронных операций, не возвращающих значения.
         /// </remarks>
-        public static readonly Task<Option<T>> SomeTask = Task.FromResult(Some);
+        public static readonly Task<Option<T>> SomeTaskInstance = Task.FromResult(SomeInstance);
     }
 }
