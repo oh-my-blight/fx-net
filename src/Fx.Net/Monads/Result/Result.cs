@@ -29,16 +29,18 @@ public readonly struct Result<T> : IEquatable<Result<T>>
 {
     private readonly T? _value;
     private readonly Error _error;
+    private readonly MonadState _state;
+
 
     /// <summary>
     ///     Возвращает значение, указывающее, завершилась ли операция успешно.
     /// </summary>
-    public bool IsSuccess { get; }
+    public bool IsSuccess => _state == MonadState.Some;
 
     /// <summary>
     ///     Возвращает значение, указывающее, завершилась ли операция с ошибкой.
     /// </summary>
-    public bool IsFailure => !IsSuccess;
+    public bool IsFailure => _state != MonadState.Some;
 
     /// <summary>
     ///     Возвращает объект ошибки, описывающий причину сбоя операции.
@@ -47,24 +49,27 @@ public readonly struct Result<T> : IEquatable<Result<T>>
     ///     Если <see cref="IsSuccess"/> равен <see langword="true"/>, всегда возвращает <see cref="Error.None"/>. 
     ///     Если контейнер был инициализирован некорректно (через <c>default</c>), возвращает <see cref="ResultErrors.DefaultNullFailure"/>.
     /// </remarks>
-    public Error Error => IsSuccess
-        ? Error.None
-        : (_error.Code is not null ? _error : ResultErrors.DefaultNullFailure);
+    public Error Error => _state switch
+    {
+        MonadState.Some => Error.None,
+        MonadState.Failure => _error,
+        _ => ResultErrors.DefaultNullFailure
+    };
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal Result(in T value)
     {
         _value = value;
-        IsSuccess = true;
         _error = default;
+        _state = MonadState.Some;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal Result(Error error)
     {
         _value = default;
-        _error = error;
-        IsSuccess = false;
+        _error = error.Code is not null ? error : ResultErrors.DefaultNullFailure;
+        _state = MonadState.Failure;
     }
 
     /// <summary>
@@ -111,8 +116,8 @@ public readonly struct Result<T> : IEquatable<Result<T>>
     public bool Equals(Result<T> other)
     {
         return IsSuccess == other.IsSuccess &&
-               EqualityComparer<T?>.Default.Equals(_value, other._value) &&
-               EqualityComparer<Error>.Default.Equals(Error, other.Error);
+               EqualityComparer<T>.Default.Equals(_value, other._value) &&
+               Error == other.Error;
     }
 
     /// <inheritdoc cref="Equals(Result{T})"/>
