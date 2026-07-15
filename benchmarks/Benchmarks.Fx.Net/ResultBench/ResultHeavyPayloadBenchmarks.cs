@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Diagnosers;
+
+using Benchmarks.Fx.Net.BenchFixtures;
 
 using Fx.Net.Monads.Result;
 
@@ -13,25 +14,6 @@ namespace Benchmarks.Fx.Net.ResultBench;
 [HardwareCounters(HardwareCounter.TotalCycles, HardwareCounter.LlcMisses)]
 public class ResultHeavyPayloadBenchmarks
 {
-    public record class UserProfileClass(Guid Id, string Email, string FullName, DateTime CreatedAt);
-
-    [StructLayout(LayoutKind.Sequential)]
-    public record struct UserProfileStruct
-    {
-        public Guid Id;
-        public DateTime Date;
-        public string Email;
-        public string Name;
-
-        public UserProfileStruct(Guid id, DateTime date, string email, string name)
-        {
-            Id = id;
-            Date = date;
-            Email = email;
-            Name = name;
-        }
-    };
-
     private readonly Guid _testId = Guid.NewGuid();
     private readonly string _testEmail = "engineer@example.com";
     private readonly string _testName = "System Architect";

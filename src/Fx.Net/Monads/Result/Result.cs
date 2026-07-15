@@ -177,7 +177,7 @@ public static class Result
     ///     Формирует промежуточный неудачный результат на основе переданного объекта ошибки.
     /// </summary>
     /// <param name="error">    Объект ошибки, описывающий причину сбоя.</param>
-    /// <returns>   Экземпляр <see cref="FailedResult"/>, готовый к неявному приведению в универсальный контейнер.</returns>
+    /// <returns>   Экземпляр <see cref="FailedResult"/>, готовый к неявному приведению в контейнер <see cref="Result{T}"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static FailedResult Failure(in Error error) => new(error);
 
