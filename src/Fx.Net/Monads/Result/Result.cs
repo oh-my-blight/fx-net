@@ -199,7 +199,8 @@ public static class Result
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Result<T> Success<T>(in T value)
     {
-        if (value is null) return Failure(ResultErrors.NullValue);
+        if (value is null)
+            return Failure(ResultErrors.NullValue);
 
         return new Result<T>(in value);
     }
