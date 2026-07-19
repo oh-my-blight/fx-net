@@ -12,6 +12,7 @@ namespace Benchmarks.Fx.Net.ResultBench;
 
 [MemoryDiagnoser]
 [HardwareCounters(HardwareCounter.TotalCycles, HardwareCounter.LlcMisses)]
+[DisassemblyDiagnoser(exportHtml: true, maxDepth: 3)]
 public class ResultHeavyPayloadBenchmarks
 {
     private readonly Guid _testId = Guid.NewGuid();
