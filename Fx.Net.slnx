@@ -1,5 +1,9 @@
 <Solution>
   <Project Path="benchmarks/Benchmarks.Fx.Net/Benchmarks.Fx.Net.csproj" />
+  <Project Path="src/Fx.Net.Generators/Fx.Net.Generators.Sample/Fx.Net.Generators.Sample.csproj" />
+  <Project Path="src/Fx.Net.Generators/Fx.Net.Generators.Tests/Fx.Net.Generators.Tests.csproj" />
+  <Project Path="src/Fx.Net.Generators/Fx.Net.Generators/Fx.Net.Generators.csproj" />
+  <Project Path="src/Fx.Net.Sandbox/Fx.Net.Sandbox.csproj" />
   <Project Path="src/Fx.Net/Fx.Net.csproj" />
-  <Project Path="test/Tests.Fx.Net/Tests.Fx.Net.csproj" />
+  <Project Path="test/Fx.Net.Tests/Fx.Net.Tests.csproj" />
 </Solution>

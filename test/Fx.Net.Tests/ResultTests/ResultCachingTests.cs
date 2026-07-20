@@ -3,7 +3,7 @@
 using Fx.Net.Errors;
 using Fx.Net.Monads.Result;
 
-namespace Tests.Fx.Net.ResultTests;
+namespace Fx.Net.Tests.ResultTests;
 
 public class ResultCachingTests
 {

@@ -2,7 +2,7 @@
 
 using Fx.Net.Monads.Option;
 
-namespace Tests.Fx.Net.OptionTests;
+namespace Fx.Net.Tests.OptionTests;
 
 public class OptionCachingTests
 {

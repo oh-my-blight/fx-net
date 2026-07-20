@@ -1,6 +1,6 @@
 ﻿using Fx.Net.Types;
 
-namespace Tests.Fx.Net.ResultTests.Fixtures;
+namespace Fx.Net.Tests.ResultTests.Fixtures;
 
 internal record ResultTestData
 {

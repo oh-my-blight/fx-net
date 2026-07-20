@@ -67,13 +67,12 @@ public readonly struct Option<T> : IEquatable<Option<T>>
         _monadState = MonadState.Some;
     }
 
-    // [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    // private Option(in MonadState monadState)
-    // {
-    //     _value = default;
-    //     _monadState = monadState;
-    // }
 
+    internal ref readonly T? Value
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => ref Unsafe.AsRef(in _value);
+    }
 
     /// <summary>
     ///     Выполняет неявное преобразование токена отсутствия значения в пустой <see cref="Option{T}"/>.

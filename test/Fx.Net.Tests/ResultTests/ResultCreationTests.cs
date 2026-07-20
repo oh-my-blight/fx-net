@@ -1,10 +1,9 @@
 ﻿using Fx.Net.Errors;
 using Fx.Net.Monads.Result;
+using Fx.Net.Tests.ResultTests.Fixtures;
 using Fx.Net.Types;
 
-using Tests.Fx.Net.ResultTests.Fixtures;
-
-namespace Tests.Fx.Net.ResultTests;
+namespace Fx.Net.Tests.ResultTests;
 
 public class ResultCreationTests
 {

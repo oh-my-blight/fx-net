@@ -1,6 +1,9 @@
 ﻿using Fx.Net.Monads.Option;
+using Fx.Net.Monads.Option.Extensions;
 
-namespace Tests.Fx.Net.OptionTests;
+using Xunit.Internal;
+
+namespace Fx.Net.Tests.OptionTests;
 
 public class OptionCreationTests
 {
