@@ -50,7 +50,11 @@ public readonly struct Option<T> : IEquatable<Option<T>>
     /// <value>
     ///     <see langword="true"/>, если контейнер содержит значение; иначе — <see langword="false"/>.
     /// </value>
-    public bool HasValue => _monadState == MonadState.Some;
+    public bool HasValue
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _monadState == MonadState.Some;
+    }
 
     /// <summary>
     ///     Указывает, пуст ли текущий контейнер.
@@ -58,7 +62,11 @@ public readonly struct Option<T> : IEquatable<Option<T>>
     /// <value>
     ///     <see langword="true"/>, если контейнер пуст; иначе — <see langword="false"/>.
     /// </value>
-    public bool IsNone => _monadState == MonadState.None;
+    public bool IsNone
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        get => _monadState == MonadState.None;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal Option(in T value)
@@ -73,6 +81,7 @@ public readonly struct Option<T> : IEquatable<Option<T>>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         get => ref Unsafe.AsRef(in _value);
     }
+
 
     /// <summary>
     ///     Выполняет неявное преобразование токена отсутствия значения в пустой <see cref="Option{T}"/>.

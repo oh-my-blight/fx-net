@@ -1,7 +1,4 @@
 ﻿using Fx.Net.Monads.Option;
-using Fx.Net.Monads.Option.Extensions;
-
-using Xunit.Internal;
 
 namespace Fx.Net.Tests.OptionTests;
 
