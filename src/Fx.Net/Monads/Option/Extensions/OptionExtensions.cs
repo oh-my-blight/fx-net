@@ -22,17 +22,20 @@ public static class OptionExtensions
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Option<U> Map<T, U>(in this Option<T> option, Func<T, U> mapper)
+    public static Option<U> Map<T, U>(
+        in this Option<T> option, 
+        in Func<T, U> mapper)
     {
         if (option.IsNone) return Option.None;
 
         return Option.Some(mapper(option.Value!));
     }
-    
 
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Option<TNextValue> Bind<T, TNextValue>(in this Option<T> option, Func<T, Option<TNextValue>> binder)
+    public static Option<TNextValue> Bind<T, TNextValue>(
+        in this Option<T> option, 
+        in Func<T, Option<TNextValue>> binder)
     {
         if (option.IsNone) return Option.None;
 
@@ -40,7 +43,7 @@ public static class OptionExtensions
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Option<T> Do<T>(in this Option<T> option, Action<T> action)
+    public static Option<T> Do<T>(in this Option<T> option, in Action<T> action)
     {
         if (option.HasValue)
         {
@@ -51,7 +54,7 @@ public static class OptionExtensions
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T? UnwrapOr<T>(in this Option<T> option, T defaultValue)
+    public static T? UnwrapOr<T>(in this Option<T> option, in T defaultValue)
     {
         if (option.IsNone) return defaultValue;
 
@@ -62,17 +65,43 @@ public static class OptionExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static TResult Match<T, TResult>(
         in this Option<T> option,
-        Func<T, TResult> onSome,
-        Func<TResult> onNone)
+        in Func<T, TResult> onSome,
+        in Func<TResult> onNone)
     {
         if (option.HasValue) return onSome(option.Value!);
 
         return onNone();
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Option<T> IfNone<T>(this Option<T> option, Action onNone)
+    {
+        if (option.IsNone)
+        {
+            onNone();
+        }
+
+        return option;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Option<T> Filter<T>(this in Option<T> option, Func<T, bool> predicate)
+    public static Option<T> IfNone<T>(this Option<T> option, in Option<T> fallbackOption)
+    {
+        if (option.HasValue) return option;
+
+        return fallbackOption;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Option<T> IfNone<T>(this Option<T> option, in Func<Option<T>> fallbackFactory)
+    {
+        if (option.HasValue) return option;
+        return fallbackFactory();
+    }
+
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Option<T> Filter<T>(this in Option<T> option, in Func<T, bool> predicate)
     {
         if (!option.HasValue || !predicate(option.Value))
         {
